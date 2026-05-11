@@ -1,273 +1,215 @@
-# Blue Max aka 1916:
+# Blue Max 1916
 
-Hex based WW1 biplane game.
+Hex-based WW1 biplane combat card game.
 
-## The Movement Turn
+## Overview
 
-Each player has a deck of Maneuver cards for the aircraft they're flying that represents their aircraft's capability.
+Players each control a biplane on a hex grid. Each turn, players secretly plan 3 moves using cards, then all moves are revealed and executed simultaneously. After each move, aircraft in range may fire at enemies. Damage degrades your aircraft's capabilities by removing cards from your decks.
 
-Maneuver cards move the aircraft forward and may optionally allow a turn at the end of the move. Turning is controlled by the yaw card played alongside the maneuver.
+## Setup
 
-They then have 2 further decks of cards:
+Each player takes:
+- 1 **Maneuver deck** (shuffled) — draw 7 cards as your starting hand
+- 1 **Yaw deck** (7 cards: Left x2, Straight x3, Right x2)
+- 1 **Pitch deck** (7 cards: Climb x2, Level x3, Dive x2)
 
-- Yaw - left x2, straight x3, right x2
-- Pitch - climb x2, level x3, dive x2
+Place your aircraft on the board at the agreed starting position and altitude. Each aircraft has an operational ceiling (default: 5) and starts at altitude 3.
 
-At the start of each turn, each player draws their hand up to 7 maneuver cards.
+A shared **Damage deck** is shuffled and placed to one side. A **Special cards** deck is also placed separately.
 
-They then place 3 sets of 3 cards - each a combination of:
+## The Turn
 
-- Maneuver
-- Yaw
-- Pitch
+### 1. Draw Cards
 
-Once everyone's placed all their cards, the movements happen, each move happening simultaneously.
+Draw maneuver cards until you have 7 in hand (or up to 5 if you have 2 pilot wounds). If your maneuver deck runs out, shuffle your discard pile back in.
 
-### Maneuver Cards:
+All yaw and pitch cards return to full availability each turn.
 
-Each maneuver card defines its movement as a sequence of steps:
+### 2. Plan Moves
 
-- `M1,0,0` — move 1 hex forward (relative to facing)
-- `TY` — turn 60° in the direction of the yaw card (left or right; no effect if yaw is straight)
-- `TL` / `TR` — turn 60° left or right (explicit, independent of yaw card)
-- `PU` / `PD` — pitch up or down (built-in altitude change, independent of pitch card)
+Each player secretly plans 3 moves. Each move is a set of 3 cards:
+- **Maneuver** — from your hand
+- **Yaw** — from your available yaw cards
+- **Pitch** — from your available pitch cards
 
-The M command uses comma-separated signed integers: `M<forward>,<left>,<right>` relative to current facing. Negative values move in the opposite direction.
+The yaw and pitch you choose must be allowed by the maneuver card (shown on the card). Place them in order: Move 1, Move 2, Move 3.
 
-Each card shows:
+Some maneuver cards have restrictions on what can come before or after them (shown on the card).
 
-- Allowed yaw directions (left, straight, right)
-- Allowed pitch directions (climb, level, dive)
-- You can only play a yaw and pitch combination that is available on the maneuver card.
+### 3. Execute Moves
 
-Cards may have restrictions:
+All players reveal their cards. Moves are executed simultaneously, one move at a time:
 
-- Previous card restrictions (what the previous maneuver must conform to)
-- Next card restrictions (what the next maneuver must conform to)
-- Cannot fire guns
+**For each move (1, 2, 3):**
+1. All aircraft move according to their cards
+2. Altitude changes are applied (from pitch card and any built-in effects)
+3. Combat is resolved (see Combat)
 
-Place them in order, secretly, the players turn them over and each move happens at the same time.
+### 4. End of Turn
 
-At the start of the next turn, all players will draw back up to their full hand. When all cards in a player's deck have been drawn they are combined, shuffled and any outstanding draws are completed.
+Played maneuver cards go to your discard pile. Special cards are one-use and removed from the game. Return to step 1.
 
-### Altitude:
+## Movement
 
-Each aircraft has an operational ceiling defined in its aircraft definition (e.g. ceiling of 5).
+Aircraft face through the flat edges of the hex (6 possible facings). Movement is always relative to your current facing.
 
-- Climbing above the ceiling is not possible.
-- Reaching altitude 0 on a Slow card results in a **landing**.
-- Reaching altitude 0 on any other card results in a **crash**.
-- **Landing exception**: When at altitude 1 on a Slow card, dive is allowed even though the card normally does not permit it. This is the only way to land.
+### Maneuver Cards
 
-#### Deck:
+Each maneuver card shows:
+- **Movement** — how the aircraft moves (forward hexes, turns, etc.)
+- **Allowed Yaw** — which yaw cards can be played with it
+- **Allowed Pitch** — which pitch cards can be played with it
+- **Restrictions** — constraints on previous/next maneuver
 
-# Baseline Maneuver Deck (13 cards)
+### Baseline Maneuver Deck (13 cards)
 
-### Straight Movement (11 cards)
+**Slow** x3
+- Move forward 1 hex, then turn (if yaw is left or right)
+- Yaw: left, straight, right
+- Pitch: climb, level (cannot dive, except at altitude 1 to land)
 
-- **Slow (1 forward + turn)** x3
-  - Steps: `M1,0,0`, `TY`
-  - Yaw: left, straight, right
-  - Pitch: climb, level (cannot dive, except at altitude 1 to land)
+**Straight** x5
+- Move forward 2 hexes, then turn (if yaw is left or right)
+- Yaw: left, straight, right
+- Pitch: climb, level, dive
 
-- **Straight (2 forward + turn)** x5
-  - Steps: `M1,0,0`, `M1,0,0`, `TY`
-  - Yaw: left, straight, right
-  - Pitch: climb, level, dive
+**Dash** x3
+- Move forward 3 hexes, no turning
+- Yaw: straight only
+- Pitch: level, dive (cannot climb)
 
-- **Dash (3 forward)** x3
-  - Steps: `M1,0,0`, `M1,0,0`, `M1,0,0`
-  - Yaw: straight only
-  - Pitch: level, dive (cannot climb)
+**Compose** x1 *(utility)*
+- Move forward 2 hexes
+- Yaw: straight only, Pitch: level only
+- Draw 2 special cards
 
-## Utility (2 cards, in main deck)
+**Tinker** x1 *(utility)*
+- Move forward 2 hexes
+- Yaw: straight only
+- Pitch: climb, level, dive
+- Next move must be a straight-category card
+- Recover 1 card from your damage taken pile
 
-- **Compose (2 forward)** x1
-  - Steps: `M1,0,0`, `M1,0,0`
-  - Yaw: straight only
-  - Pitch: level only
-  - Draw 2 special cards
+### Yaw
 
-- **Tinker (2 forward)** x1
-  - Steps: `M1,0,0`, `M1,0,0`
-  - Yaw: straight only
-  - Pitch: climb, level, dive
-  - Next move must be straight
-  - Recover 1 discarded card
+The yaw card controls turning:
+- **Left** — turn 60° left (counter-clockwise)
+- **Straight** — no turn
+- **Right** — turn 60° right (clockwise)
 
-### Yaw Cards (7 cards)
+Turns happen at the end of the maneuver's movement (after all forward hexes).
 
-- Left x2
-- Straight x3
-- Right x2
-
-### Pitch Cards (7 cards)
-
-- Climb x2
-- Level x3
-- Dive x2
-
-## Special Cards Deck (17 cards, separate draw pile)
-
-Special cards are drawn via the Compose card effect ("Draw 2 special cards") or mission completion. They go into the player's hand and are played like maneuver cards.
-
-- **Immelman** x2
-  - Steps: `PU`, `TL`, `TL`, `TL`
-  - Gain 1 altitude + 180° turn, stay in place
-  - Yaw: straight only, Pitch: level only
-  - Must follow a straight card
-
-- **Split S** x2
-  - Steps: `PD`, `TL`, `TL`, `TL`
-  - Lose 1 altitude + 180° turn, stay in place
-  - Yaw: straight only, Pitch: level only
-  - Must follow a straight card
-
-- **Stall** x2
-  - Steps: `PD`, `PD`, `TY`
-  - Lose 2 altitude, stay in place, can turn
-  - Yaw: left, straight, right. Pitch: level only
-  - Cannot be followed by Slow
-
-- **Slip** x4
-  - Steps: `MY`
-  - Shift 1 hex forward-left or forward-right (yaw determines direction), no rotation
-  - Yaw: left, right. Pitch: level only
-
-- **Zoom Climb** x2
-  - Steps: `PU`, `PU`, `M1,0,0`
-  - Climb 2 altitude, forward 1
-  - Yaw: straight only. Pitch: level only
-  - Must be followed by Slow
-
-- **Barrel Roll** x3
-  - Steps: `M1,0,0`, `M1,0,0`
-  - Forward 2, evasive
-  - Yaw: straight only. Pitch: climb, level, dive
-  - Harder to hit this and next move (combat effect TBD)
+### Pitch
 
-- **Scissors** x2
-  - Steps: `M1,0,0`, `TY`
-  - Forward 1, can turn, evasive
-  - Yaw: left, straight, right. Pitch: climb, level, dive
-  - Harder to hit this and next move (combat effect TBD)
+The pitch card controls altitude change:
+- **Climb** — gain 1 altitude
+- **Level** — stay at current altitude
+- **Dive** — lose 1 altitude
 
-### Step Command Reference
+Pitch is applied after movement. Some maneuver cards also have built-in altitude changes.
 
-| Command       | Meaning |
-|---------------|---------|
-| `M<f>,<l>,<r>` | Move: f hexes forward, l forward-left, r forward-right (signed integers) |
-| `MY`           | Move 1 hex in the yaw direction (fwd-left, forward, or fwd-right) |
-| `TY`           | Turn 60° in yaw direction (no effect if yaw is straight) |
-| `TL` / `TR`    | Turn 60° left or right (explicit) |
-| `PU` / `PD`    | Pitch up or down 1 altitude (built into card, independent of pitch card) |
+## Altitude
 
-### Restriction Types
+- Aircraft cannot climb above their operational ceiling.
+- Reaching altitude 0 on a **Slow** card = **landing** (safe).
+- Reaching altitude 0 on any other card = **crash** (destroyed).
+- **Landing exception**: At altitude 1 on a Slow card, dive is permitted even though Slow normally doesn't allow it. This is the only way to land.
+- **Taking off**: Play a Slow card with Climb from a landed position.
 
-**Category-based** (field: `previousMustBe`, `nextMustBe`, `previousCannotBe`):
-- Restricts by card category: straight, special, utility
+## Special Cards (17 cards, separate deck)
 
-**Name-based** (field: `previousMustBeName`, `nextMustBeName`, `nextCannotBeName`):
-- Restricts by specific card name: e.g. "must be followed by Slow"
+Special cards are drawn via Compose or mission rewards. They go into your hand and are played like maneuver cards. They are one-use (removed from the game after playing).
 
-#### Aircraft Definition:
+**Immelman** x2 — Gain 1 altitude + 180° turn, stay in place. Yaw: straight, Pitch: level. Must follow a straight card.
 
-Each aircraft is defined by a folder containing:
+**Split S** x2 — Lose 1 altitude + 180° turn, stay in place. Yaw: straight, Pitch: level. Must follow a straight card.
 
-- `aircraft.json` — name, operational ceiling, starting altitude, deck file references
-- `maneuver.json` — the maneuver card deck
-- `yaw.json` — the yaw card deck
-- `pitch.json` — the pitch card deck
-- `special.json` — the special card deck (separate draw pile)
+**Stall** x2 — Lose 2 altitude, stay in place, can turn. Yaw: any, Pitch: level. Cannot be followed by Slow.
 
-Different aircraft have different decks (e.g. the Sopwith Camel has a very sharp turn that only allows left and the sharp turn does not allow right, due to the aircraft's rotary engine).
+**Slip** x4 — Shift 1 hex diagonally (forward-left or forward-right, yaw determines which). No rotation, no altitude change. Yaw: left or right, Pitch: level.
 
-#### Deck notes:
+**Zoom Climb** x2 — Climb 2 altitude, forward 1 hex. Yaw: straight, Pitch: level. Must be followed by Slow.
 
-At the start of each turn, the player draws 3 maneuver cards (or up to 7 on the first turn). All yaw and pitch cards are returned to full availability each turn.
+**Barrel Roll** x3 — Forward 2 hexes, evasive. Yaw: straight. Pitch: any. Harder to hit this and next move.
 
-### Combat:
+**Scissors** x2 — Forward 1 hex, can turn, evasive. Yaw: any. Pitch: any. Harder to hit this and next move.
 
-- At the end of each move, everyone who can shoot, nominates a target.
-- Must be within 5 hexes, and in the forward triangle.
-- Count up the 'attack score'
-	- Base is 1
-	- Direction
-		- Add 2 if the target is directly in front
-	- Height
-		- Add 1 if the target is at the same height
-		- Subtract 1 if the target is more than 2 different in height
-		- Subtract 1 if the target is in the opposite direction to the pitch of the previous move
-	- Stability
-		- Add 1 if the target flew straight last turn (no turn, no special), or is landed.
-		- Add 1 if the attacker flew straight last turn (no turn, no special)
-		- Add 1 if the attacker and target are travelling in the same, or opposite direction (in line) - or is landed.
-		- Subtract 1 for each wound the attacker has
-		- (result is +2 for landed)
-	- If the result is negative or zero - then the attacker can't hit
-	- Should be in the range of:
-		- 1 to 7
-	- Count up the hits - Draw that many damage cards.
+## Combat
 
-#### Damage cards:
+At the end of each move, all aircraft that can shoot nominate a target and fire simultaneously.
 
-1 in 4 damage cards is a 'miss' that does nothing
+### Firing Arc
 
-- Different types of damage cards:
-	- Damage to the aircraft
-	- Wounds to the pilot
+You can fire at an enemy aircraft if:
+- It is within **5 hexes** directly in front of you, OR
+- It is within **4 hexes** and up to 1 hex to either side of your forward line
 
-	- Damage to the aircraft = Remove a card of a given type
-		- E.g.
-			- Remove a yaw left card
-			- Remove a climb card, if none available, remove a level flight card
-			- Remove a random pitch card
-			- If you don't have enough cards of a given type, then you lose a movement - middle first, then first.
+### Target Selection
 
-	- Wounds to the pilot
-		1 - Can no longer use special cards
-		2 - Reduce the number of cards in your hand to 5
-		3 - Dead...
+Each aircraft nominates one target within their firing arc.
 
-#### Repair:
+### Attack Score
 
-- Every move that an aircraft is landed, recover one card from the 'damage taken' deck.
-- Every 'Tinker' move, recover one card from the 'damage taken' deck.
+Calculate the attack score:
 
-#### Heal:
+| Modifier | Condition |
+|----------|-----------|
+| +1 | Base (always) |
+| +2 | Target is directly in front (on the centre line) |
+| +1 | Target is in the firing arc but off-centre |
+| +1 | Target is at the same altitude |
+| -1 | Altitude difference is greater than 2 |
+| -1 | Your pitch direction opposes the direction to the target |
+| +1 | Target flew straight last move (no turn, no special), or is landed |
+| +1 | Attacker flew straight last move |
+| +1 | Attacker and target are flying in the same or opposite direction (in line), or target is landed |
+| -1 | Per wound on the attacker |
 
-- Every move than an aircraft is landed, you can remove one wound.
+If the score is 0 or less, you cannot hit. Otherwise, draw that many damage cards.
 
-#### Taking off:
+### Damage Cards
 
-- Perform a slow with a climb.
+The damage deck is shared. Approximately 3 in 4 cards are **Near Miss** (no effect).
 
-# Mission thoughts:
+Damage types:
+- **Aircraft damage** — permanently remove a card from one of your decks (yaw, pitch, or maneuver). The specific card to remove is stated on the damage card. If the stated card isn't available, some damage cards specify a fallback.
+- **Pilot Wound** — cumulative:
+  - 1 wound: Can no longer use special cards
+  - 2 wounds: Maximum hand size reduced to 5
+  - 3 wounds: Pilot killed — aircraft is destroyed
 
-2 teams.
+An aircraft is **destroyed** when it accumulates 15 damage cards OR the pilot takes 3 wounds. Destroyed aircraft are removed from the game. Since combat is simultaneous, a destroyed aircraft can still fire in the move it is destroyed.
 
-Start by randomly placing trenches
+### Repair
 
-Teams then take turns to place:
+- Every move an aircraft is **landed**, recover 1 card from your damage taken pile.
+- Every **Tinker** move, recover 1 card from your damage taken pile.
 
+### Healing
+
+- Every move an aircraft is **landed**, remove 1 pilot wound.
+
+## Aircraft
+
+Different aircraft have different maneuver decks reflecting their capabilities. For example, the Sopwith Camel's rotary engine makes it turn more easily to the left than the right.
+
+Each aircraft definition includes its operational ceiling, starting altitude, and the composition of its card decks.
+
+## Missions (work in progress)
+
+2 teams. The board features:
+- Trenches (randomly placed)
 - Observation Balloons
 - Troop concentrations (dummy and real)
 - Supplies (dummy and real)
 
-Mission cards dealt - maybe 2 each player - each has a mission and a number of points
+Each player is dealt mission cards with objectives and point values:
+- Destroy balloons (fly alongside at same altitude for 2 turns)
+- Strafe trenches (fly at altitude 1 over trench hexes)
+- Bomb supplies/troops (fly at altitude 1 over the target — revealed if real)
 
-- Destroy x number of balloons (line up directly, for 2 turns, at the same height as a balloon, within x number of hexes)
-- Strafe x hexes of trench (fly at level 1, on or adjacent to a hex, continuously)
-- Bomb supplies / troops (fly at level 1, over a supply / troop - gets revealed if it's real)
+Completing missions may award special cards.
 
-Bonuses?
+## Winning
 
-- Every time you complete a mission you get to draw a new special card?
-- Could have 'ace pilot' cards that allow for advanced maneuvers.
-- Or, 'tinker' maneuver cards that allow you to 'fix' bits of your aircraft - and so take back cards from your damage deck.
-
-## Game styles:
-
-Best total points at the end wins. If a player is killed, points still count. End defined as number of turns, number of remaining aircraft.
-
-Can resurrect, lose x points. First to y points wins. Finish all missions, draw more missions
+Best total points at the end wins. Points come from completed missions. If a player's aircraft is destroyed, their points still count. The game ends after an agreed number of turns or when one side has no aircraft remaining.
