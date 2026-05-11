@@ -70,8 +70,7 @@ export function calculateAttackScore(attacker, target, moveIndex) {
     score += 2;
     modifiers.push({ label: 'Directly in front', value: 2 });
   } else {
-    score += 1;
-    modifiers.push({ label: 'In firing arc', value: 1 });
+    modifiers.push({ label: 'In firing arc', value: 0 });
   }
 
   if (attacker.altitude === target.altitude) {
