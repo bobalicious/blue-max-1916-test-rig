@@ -1,3 +1,5 @@
+import { aircraftSvgHtml } from './aircraft-shape.js';
+
 const YAW_ALL = ['left', 'straight', 'right'];
 const PITCH_ALL = ['climb', 'level', 'dive'];
 const YAW_SYMBOLS = { left: '←', straight: '↑', right: '→' };
@@ -72,6 +74,9 @@ function buildDiagramFromSteps(steps) {
   return buildFallbackDiagram(steps);
 }
 
+const PLANE_UP = aircraftSvgHtml(12, 0, 'dia-plane');
+function planeTurned(deg) { return aircraftSvgHtml(12, deg, 'dia-plane'); }
+
 function hex(cls, marker = '') {
   return `<div class="dia-hex ${cls}"><span class="dia-marker">${marker}</span></div>`;
 }
@@ -84,7 +89,7 @@ function buildForwardDiagram(count) {
     let cls = '';
     if (isStart) cls = 'dia-start';
     else if (isEnd) cls = 'dia-end';
-    hexes.push(hex(cls, isStart ? '▲' : ''));
+    hexes.push(hex(cls, isStart ? PLANE_UP : ''));
   }
   return `<div class="diagram diagram-forward">${hexes.join('')}</div>`;
 }
@@ -93,13 +98,13 @@ function buildForwardTurnDiagram(fwdCount) {
   const fwdHexes = [];
   for (let i = fwdCount - 1; i >= 0; i--) {
     const isStart = i === 0;
-    fwdHexes.push(hex(isStart ? 'dia-start' : '', isStart ? '▲' : ''));
+    fwdHexes.push(hex(isStart ? 'dia-start' : '', isStart ? PLANE_UP : ''));
   }
 
   return `<div class="diagram diagram-forward-turn">
     <div class="dia-turn-results">
-      ${hex('dia-end', `<span style="display:inline-block;transform:rotate(-60deg)">▲</span>`)}
-      ${hex('dia-end', `<span style="display:inline-block;transform:rotate(60deg)">▲</span>`)}
+      ${hex('dia-end', planeTurned(-60))}
+      ${hex('dia-end', planeTurned(60))}
     </div>
     ${fwdHexes.join('')}
   </div>`;
@@ -109,20 +114,20 @@ function buildTurnDiagram(tyCount) {
   const deg = tyCount * 60;
   return `<div class="diagram diagram-turn">
     <div class="dia-turn-results">
-      ${hex('dia-end', `<span style="display:inline-block;transform:rotate(-${deg}deg)">▲</span>`)}
-      ${hex('dia-end', `<span style="display:inline-block;transform:rotate(${deg}deg)">▲</span>`)}
+      ${hex('dia-end', planeTurned(-deg))}
+      ${hex('dia-end', planeTurned(deg))}
     </div>
-    ${hex('dia-start', '▲')}
+    ${hex('dia-start', PLANE_UP)}
   </div>`;
 }
 
 function buildSlipDiagram() {
   return `<div class="diagram diagram-turn">
     <div class="dia-turn-results">
-      ${hex('dia-end', '▲')}
-      ${hex('dia-end', '▲')}
+      ${hex('dia-end', PLANE_UP)}
+      ${hex('dia-end', PLANE_UP)}
     </div>
-    ${hex('dia-start', '▲')}
+    ${hex('dia-start', PLANE_UP)}
   </div>`;
 }
 
@@ -133,8 +138,8 @@ function buildSpecialTurnDiagram(turnCount, puCount, pdCount) {
   if (pdCount > 0) altLabel = `-${pdCount} alt`;
 
   return `<div class="diagram diagram-special">
-    ${hex('dia-end', `<span style="display:inline-block;transform:rotate(180deg)">▲</span>`)}
-    ${hex('dia-start', '▲')}
+    ${hex('dia-end', planeTurned(180))}
+    ${hex('dia-start', PLANE_UP)}
     ${altLabel ? `<div class="dia-alt-label">${altLabel}</div>` : ''}
   </div>`;
 }
@@ -145,7 +150,7 @@ function buildStallDiagram(puCount, pdCount) {
   if (pdCount > 0) altLabel = `-${pdCount} alt`;
 
   return `<div class="diagram diagram-special">
-    ${hex('dia-start', '▲')}
+    ${hex('dia-start', PLANE_UP)}
     ${altLabel ? `<div class="dia-alt-label">${altLabel}</div>` : ''}
   </div>`;
 }
@@ -162,7 +167,7 @@ function buildForwardAltDiagram(fwdCount, puCount, pdCount) {
     let cls = '';
     if (isStart) cls = 'dia-start';
     else if (isEnd) cls = 'dia-end';
-    hexes.push(hex(cls, isStart ? '▲' : ''));
+    hexes.push(hex(cls, isStart ? PLANE_UP : ''));
   }
   return `<div class="diagram diagram-forward">
     ${hexes.join('')}
@@ -172,7 +177,7 @@ function buildForwardAltDiagram(fwdCount, puCount, pdCount) {
 
 function buildFallbackDiagram(steps) {
   return `<div class="diagram diagram-special">
-    ${hex('dia-start', '▲')}
+    ${hex('dia-start', PLANE_UP)}
     <div class="dia-alt-label">${steps.join(', ')}</div>
   </div>`;
 }

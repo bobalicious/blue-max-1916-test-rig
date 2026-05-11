@@ -1,3 +1,8 @@
+import { aircraftSvgHtml } from './js/aircraft-shape.js';
+
+const PLANE_UP = aircraftSvgHtml(12, 0, 'dia-plane');
+function planeTurned(deg) { return aircraftSvgHtml(12, deg, 'dia-plane'); }
+
 const YAW_ALL = ['left', 'straight', 'right'];
 const PITCH_ALL = ['climb', 'level', 'dive'];
 const YAW_SYMBOLS = { left: '←', straight: '↑', right: '→' };
@@ -47,15 +52,15 @@ function buildDiagramFromSteps(steps) {
 
   if (hasMY) {
     return `<div class="diagram diagram-turn">
-      <div class="dia-turn-results">${hex('dia-end', '▲')}${hex('dia-end', '▲')}</div>
-      ${hex('dia-start', '▲')}
+      <div class="dia-turn-results">${hex('dia-end', PLANE_UP)}${hex('dia-end', PLANE_UP)}</div>
+      ${hex('dia-start', PLANE_UP)}
     </div>`;
   }
 
   if (explicitTurnCount >= 3 && fwdCount === 0) {
     return `<div class="diagram diagram-forward">
-      ${hex('dia-end', '<span style="display:inline-block;transform:rotate(180deg)">▲</span>')}
-      ${hex('dia-start', '▲')}
+      ${hex('dia-end', planeTurned(180))}
+      ${hex('dia-start', PLANE_UP)}
       ${altLabel()}
     </div>`;
   }
@@ -65,10 +70,10 @@ function buildDiagramFromSteps(steps) {
     const deg = tyCount * 60;
     return `<div class="diagram diagram-turn">
       <div class="dia-turn-results">
-        ${hex('dia-end', `<span style="display:inline-block;transform:rotate(-${deg}deg)">▲</span>`)}
-        ${hex('dia-end', `<span style="display:inline-block;transform:rotate(${deg}deg)">▲</span>`)}
+        ${hex('dia-end', planeTurned(-deg))}
+        ${hex('dia-end', planeTurned(deg))}
       </div>
-      ${hex('dia-start', '▲')}
+      ${hex('dia-start', PLANE_UP)}
       ${altLabel()}
     </div>`;
   }
@@ -76,12 +81,12 @@ function buildDiagramFromSteps(steps) {
   if (fwdCount > 0 && hasTY) {
     const fwdHexes = [];
     for (let i = fwdCount - 1; i >= 0; i--) {
-      fwdHexes.push(hex(i === 0 ? 'dia-start' : '', i === 0 ? '▲' : ''));
+      fwdHexes.push(hex(i === 0 ? 'dia-start' : '', i === 0 ? PLANE_UP : ''));
     }
     return `<div class="diagram diagram-forward-turn">
       <div class="dia-turn-results">
-        ${hex('dia-end', '<span style="display:inline-block;transform:rotate(-60deg)">▲</span>')}
-        ${hex('dia-end', '<span style="display:inline-block;transform:rotate(60deg)">▲</span>')}
+        ${hex('dia-end', planeTurned(-60))}
+        ${hex('dia-end', planeTurned(60))}
       </div>
       ${fwdHexes.join('')}
       ${altLabel()}
@@ -93,12 +98,12 @@ function buildDiagramFromSteps(steps) {
     for (let i = fwdCount; i >= 0; i--) {
       const isEnd = i === fwdCount;
       const isStart = i === 0;
-      hexes.push(hex(isStart ? 'dia-start' : isEnd ? 'dia-end' : '', isStart ? '▲' : ''));
+      hexes.push(hex(isStart ? 'dia-start' : isEnd ? 'dia-end' : '', isStart ? PLANE_UP : ''));
     }
     return `<div class="diagram diagram-forward">${hexes.join('')}${altLabel()}</div>`;
   }
 
-  return `<div class="diagram diagram-forward">${hex('dia-start', '▲')}${altLabel()}</div>`;
+  return `<div class="diagram diagram-forward">${hex('dia-start', PLANE_UP)}${altLabel()}</div>`;
 }
 
 function buildNotes(card) {

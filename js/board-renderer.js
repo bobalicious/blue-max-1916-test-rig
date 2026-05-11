@@ -1,56 +1,7 @@
 import { hexToPixel, pixelToHex, hexCorners, facingAngle, DIRECTION_NAMES, HEX_DIRECTIONS } from './hex.js';
+import { aircraftPath } from './aircraft-shape.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
-
-function createAircraftPath(scale) {
-  const s = scale;
-  return [
-    // Nose — engine cowling, rounded
-    `M ${-s * 0.06},${-s * 0.78}`,
-    `L ${s * 0.06},${-s * 0.78}`,
-    `L ${s * 0.09},${-s * 0.72}`,
-    // Right fuselage to wing
-    `L ${s * 0.09},${-s * 0.50}`,
-    // Right wing — rectangular, deep chord
-    `L ${s * 1.0},${-s * 0.50}`,
-    // Right wingtip — slight round
-    `L ${s * 1.02},${-s * 0.26}`,
-    `L ${s * 1.0},${-s * 0.02}`,
-    // Right wing trailing edge back to fuselage
-    `L ${s * 0.09},${-s * 0.02}`,
-    // Right fuselage tapers to tail
-    `L ${s * 0.07},${s * 0.35}`,
-    `L ${s * 0.05},${s * 0.55}`,
-    // Right tailplane
-    `L ${s * 0.31},${s * 0.53}`,
-    `L ${s * 0.31},${s * 0.69}`,
-    `L ${s * 0.05},${s * 0.66}`,
-    // Tail
-    `L ${s * 0.03},${s * 0.78}`,
-    `L 0,${s * 0.82}`,
-    // ── Mirror left ──
-    `L ${-s * 0.03},${s * 0.78}`,
-    `L ${-s * 0.05},${s * 0.66}`,
-    // Left tailplane
-    `L ${-s * 0.31},${s * 0.69}`,
-    `L ${-s * 0.31},${s * 0.53}`,
-    `L ${-s * 0.05},${s * 0.55}`,
-    // Left fuselage taper
-    `L ${-s * 0.07},${s * 0.35}`,
-    `L ${-s * 0.09},${-s * 0.02}`,
-    // Left wing — trailing edge
-    `L ${-s * 1.0},${-s * 0.02}`,
-    // Left wingtip
-    `L ${-s * 1.02},${-s * 0.26}`,
-    `L ${-s * 1.0},${-s * 0.50}`,
-    // Left wing — leading edge back to fuselage
-    `L ${-s * 0.09},${-s * 0.50}`,
-    // Left fuselage to nose
-    `L ${-s * 0.09},${-s * 0.72}`,
-    `L ${-s * 0.06},${-s * 0.78}`,
-    'Z',
-  ].join(' ');
-}
 
 export class BoardRenderer {
   constructor(svgElement, gridRadius, hexSize) {

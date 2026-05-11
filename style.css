@@ -186,6 +186,23 @@ body {
   color: #a09070;
 }
 
+.aircraft-icon {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.dia-start .aircraft-icon path {
+  fill: #fff;
+}
+
+.dia-end .aircraft-icon path {
+  fill: #fff;
+}
+
+.dia-hex:not(.dia-start):not(.dia-end) .aircraft-icon path {
+  fill: #a09070;
+}
+
 .diagram-forward {
   gap: 2px;
 }
