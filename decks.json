@@ -1,0 +1,5 @@
+[
+  { "file": "aircraft/default/maneuver.json", "name": "Maneuver Cards" },
+  { "file": "aircraft/default/yaw.json", "name": "Yaw Cards" },
+  { "file": "aircraft/default/pitch.json", "name": "Pitch Cards" }
+]

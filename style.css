@@ -1,0 +1,348 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Georgia', serif;
+  background: #2a2a2a;
+  color: #ccc;
+  padding: 20px;
+}
+
+#card-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.deck-section {
+  margin-bottom: 32px;
+}
+
+.deck-heading {
+  font-size: 14pt;
+  margin-bottom: 12px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #555;
+}
+
+.card-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ── Base card ── */
+
+.card {
+  width: 1.75in;
+  height: 2.5in;
+  border: 1.5px solid #333;
+  border-radius: 6px;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  font-size: 7.5pt;
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 6pt;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-weight: bold;
+  margin-bottom: 3px;
+}
+
+.card-title {
+  font-size: 10pt;
+  font-weight: bold;
+  text-align: center;
+  padding: 3px 0;
+  border-top: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+}
+
+.card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* ── Maneuver card ── */
+
+.card-maneuver {
+  background: #fdf6e3;
+  color: #3b3020;
+  border-color: #b58900;
+}
+
+.card-maneuver-straight { border-color: #859900; }
+.card-maneuver-turn { border-color: #b58900; }
+.card-maneuver-special { border-color: #dc322f; }
+.card-maneuver-utility { border-color: #6c71c4; }
+
+/* ── Restriction bar (top) ── */
+
+.card-restrictions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #c0b08a;
+  padding-bottom: 4px;
+  margin-bottom: 2px;
+  min-height: 22px;
+}
+
+.restrict-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  min-height: 16px;
+  flex: 1;
+}
+
+.restrict-prev { align-items: flex-start; }
+.restrict-current { align-items: center; }
+.restrict-next { align-items: flex-end; }
+
+.restrict-heading {
+  font-size: 4.5pt;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #a09070;
+}
+
+.restrict-symbols {
+  display: flex;
+  gap: 2px;
+}
+
+.rsym {
+  font-size: 10pt;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.rsym-green { color: #4a7c59; }
+.rsym-red { color: #c0392b; }
+
+/* ── Movement diagram (middle) ── */
+
+.card-diagram {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.diagram {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dia-hex {
+  width: 24px;
+  height: 22px;
+  clip-path: polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%);
+  background: #888;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.dia-start {
+  background: #555;
+}
+
+.dia-end {
+  background: #5b8c5a;
+}
+
+.dia-marker {
+  font-size: 7pt;
+  font-weight: bold;
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.dia-start .dia-marker {
+  color: #fff;
+}
+
+.dia-hex:not(.dia-start) .dia-marker {
+  color: #a09070;
+}
+
+.diagram-forward {
+  gap: 2px;
+}
+
+.diagram-turn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.dia-turn-results {
+  display: flex;
+  gap: 6px;
+}
+
+.dia-end .dia-marker {
+  color: #fff;
+  display: inline-block;
+}
+
+.diagram-forward-turn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.diagram-special {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.dia-alt-label {
+  font-size: 6pt;
+  color: #888;
+  font-weight: bold;
+  margin-top: 2px;
+  text-align: center;
+}
+
+.rsym-name {
+  font-size: 6pt;
+}
+
+/* ── Card text (bottom) ── */
+
+.card-text {
+  border-top: 1px solid #c0b08a;
+  padding-top: 3px;
+  text-align: center;
+}
+
+.card-name {
+  font-size: 9pt;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.card-subtitle {
+  font-size: 6.5pt;
+  color: #777;
+}
+
+.card-subtitle:empty { display: none; }
+
+.card-notes {
+  font-size: 6pt;
+  color: #888;
+  font-style: italic;
+  line-height: 1.3;
+  margin-top: 1px;
+}
+
+.card-notes:empty { display: none; }
+
+/* ── Yaw cards ── */
+
+.card-yaw {
+  background: #e8f5e9;
+  color: #2e4a30;
+  border-color: #4caf50;
+}
+
+.card-yaw-left { border-color: #388e3c; }
+.card-yaw-straight { border-color: #66bb6a; }
+.card-yaw-right { border-color: #388e3c; }
+
+.card-symbol {
+  font-size: 28pt;
+  line-height: 1;
+}
+
+/* ── Pitch cards ── */
+
+.card-pitch {
+  background: #e3f2fd;
+  color: #1a3a5c;
+  border-color: #42a5f5;
+}
+
+.card-pitch-climb { border-color: #1e88e5; }
+.card-pitch-level { border-color: #64b5f6; }
+.card-pitch-dive { border-color: #1e88e5; }
+
+/* ── Damage cards ── */
+
+.card-damage {
+  background: #f5e8e3;
+  color: #4a2a20;
+  border-color: #c08060;
+}
+
+.card-damage-none { border-color: #aaa; background: #f0ede8; color: #666; }
+.card-damage-wound { border-color: #c03020; }
+.card-damage-discard { border-color: #c08030; }
+.card-damage-discardMultiple { border-color: #c03020; }
+
+.card-damage-icon {
+  font-size: 20pt;
+  line-height: 1;
+}
+
+.card-effect-badge {
+  font-size: 8pt;
+}
+
+/* ── Print styles ── */
+
+@media print {
+  body {
+    background: white;
+    color: black;
+    padding: 0;
+    margin: 0;
+  }
+
+  .deck-heading {
+    color: black;
+    font-size: 11pt;
+    margin-bottom: 6px;
+    border-bottom-color: #999;
+  }
+
+  .deck-section {
+    page-break-inside: avoid;
+    margin-bottom: 16px;
+  }
+
+  .card-grid {
+    gap: 0;
+  }
+
+  .card {
+    border-radius: 0;
+    page-break-inside: avoid;
+  }
+}

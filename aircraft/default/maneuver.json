@@ -1,0 +1,55 @@
+[
+  {
+    "type": "maneuver",
+    "name": "Slow",
+    "subtitle": "1 forward + turn",
+    "category": "straight",
+    "count": 3,
+    "yaw": ["left", "straight", "right"],
+    "pitch": ["climb", "level"],
+    "steps": ["M1,0,0", "TY"]
+  },
+  {
+    "type": "maneuver",
+    "name": "Straight",
+    "subtitle": "2 forward + turn",
+    "category": "straight",
+    "count": 5,
+    "yaw": ["left", "straight", "right"],
+    "pitch": ["climb", "level", "dive"],
+    "steps": ["M1,0,0", "M1,0,0", "TY"]
+  },
+  {
+    "type": "maneuver",
+    "name": "Dash",
+    "subtitle": "3 forward",
+    "category": "straight",
+    "count": 3,
+    "yaw": ["straight"],
+    "pitch": ["level", "dive"],
+    "steps": ["M1,0,0", "M1,0,0", "M1,0,0"]
+  },
+  {
+    "type": "maneuver",
+    "name": "Compose",
+    "subtitle": "2 forward",
+    "category": "utility",
+    "count": 1,
+    "yaw": ["straight"],
+    "pitch": ["level"],
+    "effect": "Draw 2 special cards",
+    "steps": ["M1,0,0", "M1,0,0"]
+  },
+  {
+    "type": "maneuver",
+    "name": "Tinker",
+    "subtitle": "2 forward",
+    "category": "utility",
+    "count": 1,
+    "yaw": ["straight"],
+    "pitch": ["climb", "level", "dive"],
+    "nextMustBe": ["straight"],
+    "effect": "Recover 1 discarded card",
+    "steps": ["M1,0,0", "M1,0,0"]
+  }
+]

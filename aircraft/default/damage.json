@@ -1,0 +1,169 @@
+[
+  {
+    "type": "damage",
+    "name": "Near Miss",
+    "description": "Bullets whistle past — no damage",
+    "effect": "none",
+    "count": 129
+  },
+  {
+    "type": "damage",
+    "name": "Pilot Wounded",
+    "description": "A bullet grazes the pilot. Accumulates: 1=no specials, 2=hand reduced to 5, 3=dead",
+    "effect": "wound",
+    "count": 4
+  },
+  {
+    "type": "damage",
+    "name": "Engine Damaged",
+    "description": "Engine losing power. Discard 1 climb pitch card. If none, discard 1 level pitch card",
+    "effect": "discard",
+    "target": { "deck": "pitch", "direction": "climb", "fallback": "level" },
+    "count": 3
+  },
+  {
+    "type": "damage",
+    "name": "Engine Seized",
+    "description": "Engine seizes momentarily. Discard 1 Dash card. If none, discard 1 Straight card",
+    "effect": "discard",
+    "target": { "deck": "maneuver", "name": "Dash", "fallbackName": "Straight" },
+    "count": 2
+  },
+  {
+    "type": "damage",
+    "name": "Engine Fire",
+    "description": "Fire in the engine bay! Discard 1 climb pitch card and 1 Dash card",
+    "effect": "discardMultiple",
+    "targets": [
+      { "deck": "pitch", "direction": "climb" },
+      { "deck": "maneuver", "name": "Dash", "fallbackName": "Straight" }
+    ],
+    "count": 1
+  },
+  {
+    "type": "damage",
+    "name": "Aileron Damaged",
+    "description": "Aileron hit by fire. Discard 1 random yaw card",
+    "effect": "discard",
+    "target": { "deck": "yaw", "random": true },
+    "count": 3
+  },
+  {
+    "type": "damage",
+    "name": "Left Aileron Jammed",
+    "description": "Left aileron cables severed. Discard 1 left yaw card",
+    "effect": "discard",
+    "target": { "deck": "yaw", "direction": "left" },
+    "count": 2
+  },
+  {
+    "type": "damage",
+    "name": "Right Aileron Jammed",
+    "description": "Right aileron cables severed. Discard 1 right yaw card",
+    "effect": "discard",
+    "target": { "deck": "yaw", "direction": "right" },
+    "count": 2
+  },
+  {
+    "type": "damage",
+    "name": "Rudder Damaged",
+    "description": "Rudder shot through. Discard 1 straight yaw card",
+    "effect": "discard",
+    "target": { "deck": "yaw", "direction": "straight" },
+    "count": 2
+  },
+  {
+    "type": "damage",
+    "name": "Elevator Damaged",
+    "description": "Elevator controls hit. Discard 1 random pitch card",
+    "effect": "discard",
+    "target": { "deck": "pitch", "random": true },
+    "count": 3
+  },
+  {
+    "type": "damage",
+    "name": "Elevator Jammed Up",
+    "description": "Elevator locked in climb position. Discard 1 climb pitch card",
+    "effect": "discard",
+    "target": { "deck": "pitch", "direction": "climb" },
+    "count": 2
+  },
+  {
+    "type": "damage",
+    "name": "Elevator Jammed Down",
+    "description": "Elevator locked in dive position. Discard 1 dive pitch card",
+    "effect": "discard",
+    "target": { "deck": "pitch", "direction": "dive" },
+    "count": 2
+  },
+  {
+    "type": "damage",
+    "name": "Fuselage Ripped",
+    "description": "Structural damage to fuselage. Discard 1 Dash card. If none, discard 1 Straight card",
+    "effect": "discard",
+    "target": { "deck": "maneuver", "name": "Dash", "fallbackName": "Straight" },
+    "count": 3
+  },
+  {
+    "type": "damage",
+    "name": "Struts Damaged",
+    "description": "Wing struts splintered. Discard 1 Slow card. If none, discard 1 Straight card",
+    "effect": "discard",
+    "target": { "deck": "maneuver", "name": "Slow", "fallbackName": "Straight" },
+    "count": 2
+  },
+  {
+    "type": "damage",
+    "name": "Engine Temperamental",
+    "description": "Engine misfiring. Discard 1 random maneuver card",
+    "effect": "discard",
+    "target": { "deck": "maneuver", "random": true },
+    "count": 3
+  },
+  {
+    "type": "damage",
+    "name": "Wing Fabric Torn",
+    "description": "Canvas ripped from the upper wing. Discard 1 dive pitch card. If none, discard 1 level pitch card",
+    "effect": "discard",
+    "target": { "deck": "pitch", "direction": "dive", "fallback": "level" },
+    "count": 2
+  },
+  {
+    "type": "damage",
+    "name": "Fuel Leak",
+    "description": "Fuel line punctured. Discard 1 Straight card",
+    "effect": "discard",
+    "target": { "deck": "maneuver", "name": "Straight" },
+    "count": 3
+  },
+  {
+    "type": "damage",
+    "name": "Control Lines Frayed",
+    "description": "Control wires partially severed. Discard 1 random yaw card and 1 random pitch card",
+    "effect": "discardMultiple",
+    "targets": [
+      { "deck": "yaw", "random": true },
+      { "deck": "pitch", "random": true }
+    ],
+    "count": 1
+  },
+  {
+    "type": "damage",
+    "name": "Propeller Nicked",
+    "description": "Propeller blade chipped. Discard 1 Dash card",
+    "effect": "discard",
+    "target": { "deck": "maneuver", "name": "Dash" },
+    "count": 2
+  },
+  {
+    "type": "damage",
+    "name": "Tail Section Hit",
+    "description": "Tail assembly damaged. Discard 1 straight yaw card and 1 random pitch card",
+    "effect": "discardMultiple",
+    "targets": [
+      { "deck": "yaw", "direction": "straight" },
+      { "deck": "pitch", "random": true }
+    ],
+    "count": 1
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "name": "Default Biplane",
+  "ceiling": 5,
+  "startAltitude": 3,
+  "decks": {
+    "maneuver": "maneuver.json",
+    "yaw": "yaw.json",
+    "pitch": "pitch.json",
+    "special": "special.json",
+    "damage": "damage.json"
+  }
+}

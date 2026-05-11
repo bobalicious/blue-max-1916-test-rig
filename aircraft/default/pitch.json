@@ -1,0 +1,5 @@
+[
+  { "type": "pitch", "direction": "climb", "count": 2 },
+  { "type": "pitch", "direction": "level", "count": 3 },
+  { "type": "pitch", "direction": "dive", "count": 2 }
+]

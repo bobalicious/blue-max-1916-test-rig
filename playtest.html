@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blue Max 1918 — Playtest Rig</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="playtest.css">
+</head>
+<body>
+  <div id="setup-screen">
+    <div class="setup-box">
+      <h1>Blue Max 1918</h1>
+      <p class="setup-sub">Movement Playtest Rig</p>
+      <div class="setup-field">
+        <label for="bot-count">Bot aircraft:</label>
+        <input type="number" id="bot-count" min="1" max="5" value="3">
+      </div>
+      <button id="start-game" class="btn btn-play">Start Game</button>
+    </div>
+  </div>
+  <div id="app" class="hidden">
+    <div id="board-panel">
+      <svg id="hex-board"></svg>
+      <div id="aircraft-info"></div>
+    </div>
+    <div id="control-panel">
+      <div id="roster-container">
+        <div id="roster-header">
+          <span>Aircraft</span>
+          <button id="roster-toggle" class="log-toggle-btn">Hide</button>
+        </div>
+        <div id="roster-list"></div>
+      </div>
+      <div id="altitude-status"></div>
+      <div id="turn-info"></div>
+      <div id="play-board"></div>
+      <div id="card-picker"></div>
+      <div id="action-buttons"></div>
+      <div id="deck-info"></div>
+      <div id="game-log-container">
+        <div id="game-log-header">
+          <span>Log</span>
+          <button id="log-toggle" class="log-toggle-btn">Hide</button>
+        </div>
+        <div id="game-log"></div>
+      </div>
+    </div>
+  </div>
+  <div id="card-modal" class="card-modal hidden">
+    <div class="card-modal-overlay"></div>
+    <div class="card-modal-content">
+      <button class="card-modal-nav card-modal-prev">&#8249;</button>
+      <div class="card-modal-card"></div>
+      <button class="card-modal-nav card-modal-next">&#8250;</button>
+    </div>
+  </div>
+  <script type="module" src="js/playtest.js"></script>
+</body>
+</html>

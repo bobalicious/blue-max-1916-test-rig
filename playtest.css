@@ -1,0 +1,974 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Georgia', serif;
+  background: #e8dcc8;
+  color: #4a3a25;
+  height: 100vh;
+  overflow: hidden;
+  padding: 0;
+}
+
+.hidden { display: none !important; }
+
+#app {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  height: 100vh;
+}
+
+/* ── Setup Screen ── */
+
+#setup-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.setup-box {
+  text-align: center;
+  padding: 40px 60px;
+  background: #f0e8d8;
+  border-radius: 10px;
+  border: 1px solid #c8b898;
+}
+
+.setup-box h1 {
+  font-size: 28px;
+  color: #4a3a25;
+  margin-bottom: 4px;
+}
+
+.setup-sub {
+  font-size: 13px;
+  color: #8a7a60;
+  margin-bottom: 24px;
+}
+
+.setup-field {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.setup-field label {
+  font-size: 14px;
+}
+
+.setup-field input {
+  width: 60px;
+  padding: 6px 10px;
+  font-size: 16px;
+  font-family: 'Georgia', serif;
+  border: 1px solid #b0a080;
+  border-radius: 4px;
+  background: #fff;
+  color: #4a3a25;
+  text-align: center;
+}
+
+#setup-screen .btn {
+  font-size: 16px;
+  padding: 12px 32px;
+}
+
+/* ── Board Panel ── */
+
+#board-panel {
+  display: flex;
+  flex-direction: column;
+  background: #d8cab0;
+  border-right: 1px solid #b8a888;
+}
+
+#hex-board {
+  flex: 1;
+  width: 100%;
+  transition: viewBox 0.3s;
+}
+
+.hex-cell, .aircraft-current {
+  cursor: pointer;
+}
+
+.hex-cell {
+  fill: #dce8f0;
+  stroke: #b0a080;
+  stroke-width: 1.2;
+}
+
+.aircraft-current .aircraft-altitude {
+  font-size: 9px;
+  font-weight: bold;
+  font-family: sans-serif;
+}
+
+.aircraft-ghost .aircraft-altitude {
+  font-size: 7px;
+  font-family: sans-serif;
+}
+
+#aircraft-info {
+  padding: 8px 12px;
+  font-size: 11px;
+  color: #7a6a50;
+  background: #d0c0a0;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+/* ── Control Panel ── */
+
+#control-panel {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  gap: 12px;
+  overflow-y: auto;
+  background: #f0e8d8;
+}
+
+/* ── Aircraft Roster ── */
+
+#roster-container {
+  padding-bottom: 8px;
+  border-bottom: 1px solid #c8b898;
+}
+
+#roster-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  font-weight: bold;
+  color: #8a7a60;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding-bottom: 4px;
+}
+
+#roster-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+#roster-list.roster-hidden {
+  display: none;
+}
+
+.roster-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+}
+
+.roster-row:hover {
+  background: #e8dcc8;
+}
+
+.roster-selected {
+  background: #e0d8c0;
+  outline: 2px solid #b0a060;
+  outline-offset: -1px;
+}
+
+.roster-side-0 {
+  border-left-color: #2a5f8f;
+}
+
+.roster-side-1 {
+  border-left-color: #8f2a2a;
+}
+
+.roster-player {
+  font-weight: bold;
+}
+
+.roster-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.roster-side-0 .roster-name { color: #2a5f8f; }
+.roster-side-1 .roster-name { color: #8f2a2a; }
+
+.roster-stat {
+  font-size: 10px;
+  color: #6a5a45;
+  min-width: 18px;
+  text-align: center;
+}
+
+.roster-status {
+  font-size: 9px;
+  font-weight: bold;
+  padding: 0 3px;
+  border-radius: 2px;
+}
+
+.roster-critical {
+  color: #c03020;
+  font-weight: bold;
+}
+
+.roster-dead {
+  opacity: 0.5;
+}
+
+.roster-dead .roster-status {
+  background: #c03020;
+  color: #fff;
+}
+
+.roster-landed .roster-status {
+  background: #6a9a30;
+  color: #fff;
+}
+
+/* ── Player Stats ── */
+
+#altitude-status {
+  padding-bottom: 8px;
+  border-bottom: 1px solid #c8b898;
+}
+
+.player-stats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-label {
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #8a7a60;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: bold;
+  color: #4a3a25;
+  line-height: 1.1;
+}
+
+.stat-max {
+  font-size: 10px;
+  font-weight: normal;
+  color: #a09070;
+}
+
+.stat-critical {
+  color: #c03020;
+}
+
+.stat-alert {
+  font-size: 9px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  margin-left: auto;
+}
+
+.stat-destroyed {
+  background: #d05030;
+  color: #fff;
+}
+
+.stat-landed {
+  background: #6a9a30;
+  color: #fff;
+}
+
+#turn-info {
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  padding: 6px;
+  border-bottom: 1px solid #c8b898;
+}
+
+/* ── Play Board (3×3 grid) ── */
+
+#play-board {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pb-headers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+
+.pb-header {
+  text-align: center;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #8a7a60;
+  padding: 2px;
+}
+
+.pb-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+
+.pb-slot {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px dashed #c0a880;
+  border-radius: 4px;
+  font-size: 9px;
+  color: #a09070;
+  cursor: pointer;
+  padding: 4px;
+  text-align: center;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.pb-slot:hover {
+  border-color: #a08860;
+}
+
+.pb-filled {
+  border-style: solid;
+  border-color: #b0a080;
+  background: #e8dcc8;
+  color: #4a3a25;
+}
+
+.pb-active {
+  border-color: #c09040;
+  background: #f5edd8;
+}
+
+.pb-blocked {
+  border-color: #ddd0b8;
+  color: #c0b098;
+  cursor: default;
+}
+
+.pb-blocked:hover {
+  border-color: #ddd0b8;
+}
+
+.pb-executing {
+  border-color: #7a9a30;
+  background: #ecf0d8;
+}
+
+.slot-card {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.slot-maneuver {
+  border-left: 3px solid;
+  padding-left: 4px;
+}
+
+.slot-yaw {
+  color: #4a8a40;
+}
+
+.slot-pitch {
+  color: #4878a0;
+}
+
+/* ── Card Picker ── */
+
+#card-picker {
+  flex: 1;
+  min-height: 120px;
+  overflow-y: auto;
+}
+
+.picker-label {
+  font-size: 11px;
+  color: #8a7a60;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.picker-empty {
+  color: #a09878;
+  font-style: italic;
+  text-align: center;
+  padding: 20px;
+  font-size: 11px;
+}
+
+.picker-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.card-tile {
+  width: 105px;
+  padding: 8px;
+  border: 1.5px solid #c0a880;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.card-tile:hover {
+  border-color: #a08050;
+  background: #f5edd8;
+}
+
+.card-tile-maneuver {
+  background: #f0e4cc;
+  border-width: 2px;
+}
+
+.card-tile-yaw {
+  background: #e0ecd8;
+  border-color: #8aaa70;
+}
+
+.card-tile-pitch {
+  background: #d8e4f0;
+  border-color: #7898b0;
+}
+
+.tile-name {
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.tile-sub {
+  font-size: 9px;
+  color: #8a7a60;
+  margin-top: 2px;
+}
+
+.tile-symbol {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.card-tile {
+  position: relative;
+}
+
+.tile-view-btn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 18px;
+  height: 18px;
+  border: none;
+  background: rgba(0,0,0,0.08);
+  color: #8a7a60;
+  font-size: 12px;
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.card-tile:hover .tile-view-btn {
+  opacity: 1;
+}
+
+.tile-view-btn:hover {
+  background: rgba(0,0,0,0.15);
+  color: #4a3a25;
+}
+
+/* ── Action Buttons ── */
+
+#action-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  flex: 1;
+  min-width: 100px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 5px;
+  font-family: 'Georgia', serif;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: background 0.15s;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.btn-play {
+  background: #7a9a30;
+  color: #fff;
+}
+
+.btn-play:hover:not(:disabled) {
+  background: #8aaa40;
+}
+
+.btn-next {
+  background: #4888b0;
+  color: #fff;
+}
+
+.btn-next:hover {
+  background: #5898c0;
+}
+
+.btn-end {
+  background: #c09030;
+  color: #fff;
+}
+
+.btn-end:hover {
+  background: #d0a040;
+}
+
+.btn-clear, .btn-cancel {
+  background: #c0b098;
+  color: #4a3a25;
+}
+
+.btn-clear:hover, .btn-cancel:hover {
+  background: #b0a088;
+}
+
+/* ── Card Modal ── */
+
+.card-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-modal.hidden {
+  display: none;
+}
+
+.card-modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.card-modal-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 1;
+}
+
+.card-modal-card {
+  z-index: 1;
+  transform: scale(2.5);
+}
+
+.card-modal-nav {
+  background: #e8dcc8;
+  border: 1px solid #b0a080;
+  color: #4a3a25;
+  font-size: 32px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  z-index: 2;
+  transition: background 0.15s;
+}
+
+.card-modal-nav:hover {
+  background: #d8cab0;
+}
+
+.modal-card-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-modal-play {
+  margin-top: 4px;
+  padding: 4px 12px;
+  font-size: 6px;
+  background: #7a9a30;
+  color: #fff;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  font-family: 'Georgia', serif;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-modal-play:hover:not(:disabled) {
+  background: #8aaa40;
+}
+
+.btn-modal-play:disabled {
+  background: #c0b098;
+  color: #8a7a60;
+  cursor: default;
+}
+
+/* ── Deck Info ── */
+
+#deck-info {
+  font-size: 10px;
+  color: #8a7a60;
+  text-align: center;
+  padding-top: 8px;
+  border-top: 1px solid #c8b898;
+}
+
+/* ── Side Colours ── */
+
+.aircraft-side-0 path { fill: #2a5f8f; stroke: #1a3f5f; stroke-width: 0.8; }
+.aircraft-side-1 path { fill: #8f2a2a; stroke: #5f1a1a; stroke-width: 0.8; }
+
+.aircraft-side-0 .altitude-badge { fill: #fff; stroke: #2a5f8f; }
+.aircraft-side-1 .altitude-badge { fill: #fff; stroke: #8f2a2a; }
+
+.aircraft-side-0 .aircraft-altitude { fill: #1a3f5f; }
+.aircraft-side-1 .aircraft-altitude { fill: #5f1a1a; }
+
+.aircraft-ghost.aircraft-side-0 path { fill: #a0c0d8; stroke: #90b0c8; }
+.aircraft-ghost.aircraft-side-1 path { fill: #d8a0a0; stroke: #c89090; }
+
+.aircraft-ghost.aircraft-side-0 .altitude-badge { fill: #d0e0ee; stroke: #a0c0d8; }
+.aircraft-ghost.aircraft-side-1 .altitude-badge { fill: #eed0d0; stroke: #d8a0a0; }
+
+.aircraft-ghost.aircraft-side-0 .aircraft-altitude { fill: #6090b0; }
+.aircraft-ghost.aircraft-side-1 .aircraft-altitude { fill: #b06060; }
+
+/* ── Flight Paths ── */
+
+.flight-path {
+  fill: none;
+  stroke-width: 1.5;
+  stroke-dasharray: 4 3;
+  stroke-linecap: round;
+}
+
+.flight-path-side-0 { stroke: #4a8ac0; }
+.flight-path-side-1 { stroke: #c04a4a; }
+
+.hex-player-highlight {
+  fill: #f5eaA0;
+  stroke: #d8c860;
+  stroke-width: 1;
+}
+
+.hex-arc-center {
+  fill: rgba(200, 60, 60, 0.25);
+  stroke: rgba(200, 60, 60, 0.4);
+  stroke-width: 1;
+}
+
+.hex-arc-side {
+  fill: rgba(200, 120, 60, 0.15);
+  stroke: rgba(200, 120, 60, 0.3);
+  stroke-width: 0.8;
+}
+
+.hex-attacker-highlight {
+  fill: #c0e8c0;
+  stroke: #60a060;
+  stroke-width: 2;
+}
+
+.hex-target-highlight {
+  fill: #f0c0c0;
+  stroke: #c06060;
+  stroke-width: 2;
+}
+
+/* ── Card Labels (SVG) ── */
+
+.card-label-bg {
+  fill: rgba(255, 255, 255, 0.9);
+  stroke: #b0a080;
+  stroke-width: 0.5;
+}
+
+.card-label-text {
+  font-size: 7px;
+  font-family: sans-serif;
+  fill: #4a3a25;
+}
+
+.card-label-name {
+  font-size: 6px;
+  font-family: sans-serif;
+  font-weight: bold;
+  fill: #8a7a60;
+}
+
+.card-label-side-0 .card-label-bg { stroke: #2a5f8f; }
+.card-label-side-1 .card-label-bg { stroke: #8f2a2a; }
+.card-label-side-0 .card-label-name { fill: #2a5f8f; }
+.card-label-side-1 .card-label-name { fill: #8f2a2a; }
+
+/* ── Game Log ── */
+
+#game-log-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+#game-log-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  font-weight: bold;
+  color: #8a7a60;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding-bottom: 4px;
+}
+
+.log-toggle-btn {
+  background: none;
+  border: 1px solid #c0b098;
+  color: #8a7a60;
+  font-size: 9px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: 'Georgia', serif;
+}
+
+.log-toggle-btn:hover {
+  background: #e0d8c8;
+  color: #4a3a25;
+}
+
+#game-log {
+  flex: 1;
+  min-height: 80px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 6px 8px;
+  background: #e8e0d0;
+  border: 1px solid #c8b898;
+  border-radius: 4px;
+  font-size: 10px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  color: #5a4a35;
+  line-height: 1.5;
+}
+
+#game-log.log-hidden {
+  display: none;
+}
+
+.log-entry {
+  padding: 1px 0;
+}
+
+.log-turn {
+  font-weight: bold;
+  color: #4a3a25;
+  margin-top: 4px;
+  border-top: 1px solid #d0c0a8;
+  padding-top: 4px;
+}
+
+.log-move {
+  font-weight: bold;
+  color: #4878a0;
+}
+
+.log-combat { color: #a06030; font-weight: bold; }
+.log-hit { color: #c03020; }
+.log-miss { color: #8a8a7a; }
+.log-destroyed { color: #c03020; font-weight: bold; }
+
+/* ── Combat Labels (SVG) ── */
+
+.combat-label-bg {
+  stroke-width: 0.5;
+}
+
+.combat-hit {
+  fill: rgba(255, 230, 220, 0.92);
+  stroke: #c06040;
+}
+
+.combat-miss {
+  fill: rgba(240, 238, 230, 0.88);
+  stroke: #b0a888;
+}
+
+.combat-label-header {
+  font-size: 6px;
+  font-family: sans-serif;
+  font-weight: bold;
+  fill: #8a5030;
+}
+
+.combat-label-text {
+  font-size: 5.5px;
+  font-family: sans-serif;
+  fill: #5a4a35;
+}
+
+.combat-info {
+  font-size: 12px;
+  padding: 8px;
+  background: #f5edd8;
+  border: 1px solid #c8b898;
+  border-radius: 4px;
+  text-align: center;
+  flex-basis: 100%;
+}
+
+.btn-combat {
+  background: #c06030;
+  color: #fff;
+}
+
+.btn-combat:hover {
+  background: #d07040;
+}
+
+.combat-card-counter {
+  font-size: 6px;
+  color: #8a7a60;
+  text-align: center;
+  margin-top: 2px;
+}
+
+.combat-result-label {
+  font-size: 7px;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 8px;
+  border-radius: 2px;
+  margin-top: 2px;
+}
+
+.combat-result-miss {
+  color: #8a8a7a;
+}
+
+.combat-result-hit {
+  color: #c03020;
+}
+
+.discard-banner {
+  font-size: 8px;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #fff;
+  background: #c03020;
+  padding: 3px 12px;
+  border-radius: 3px;
+  margin-bottom: 4px;
+}
+
+.combat-dismiss-btn,
+.combat-next-btn {
+  margin-top: 2px;
+}
+
+.btn-target {
+  background: #5a7a90;
+  color: #fff;
+  font-size: 11px;
+}
+
+.btn-target:hover {
+  background: #6a8aa0;
+}
+
+.combat-modifiers {
+  flex-basis: 100%;
+  background: #f5edd8;
+  border: 1px solid #c8b898;
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 11px;
+}
+
+.combat-mod {
+  display: flex;
+  gap: 6px;
+  padding: 1px 0;
+  color: #5a4a35;
+}
+
+.mod-value {
+  font-weight: bold;
+  min-width: 24px;
+  text-align: right;
+  color: #4a3a25;
+}
+
+.combat-mod-total {
+  border-top: 1px solid #c8b898;
+  margin-top: 3px;
+  padding-top: 3px;
+  font-weight: bold;
+}

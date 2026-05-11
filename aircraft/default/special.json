@@ -1,0 +1,78 @@
+[
+  {
+    "type": "maneuver",
+    "name": "Immelman",
+    "subtitle": "gain 1 alt + 180° turn",
+    "category": "special",
+    "count": 2,
+    "yaw": ["straight"],
+    "pitch": ["level"],
+    "steps": ["PU", "TL", "TL", "TL"],
+    "previousMustBe": ["straight"]
+  },
+  {
+    "type": "maneuver",
+    "name": "Split S",
+    "subtitle": "lose 1 alt + 180° turn",
+    "category": "special",
+    "count": 2,
+    "yaw": ["straight"],
+    "pitch": ["level"],
+    "steps": ["PD", "TL", "TL", "TL"],
+    "previousMustBe": ["straight"]
+  },
+  {
+    "type": "maneuver",
+    "name": "Stall",
+    "subtitle": "lose 2 alt, stay in place",
+    "category": "special",
+    "count": 2,
+    "yaw": ["left", "straight", "right"],
+    "pitch": ["level"],
+    "steps": ["PD", "PD", "TY"],
+    "nextCannotBeName": ["Slow"]
+  },
+  {
+    "type": "maneuver",
+    "name": "Slip",
+    "subtitle": "shift fwd-left or fwd-right",
+    "category": "special",
+    "count": 4,
+    "yaw": ["left", "right"],
+    "pitch": ["level"],
+    "steps": ["MY"]
+  },
+  {
+    "type": "maneuver",
+    "name": "Zoom Climb",
+    "subtitle": "climb 2, forward 1",
+    "category": "special",
+    "count": 2,
+    "yaw": ["straight"],
+    "pitch": ["level"],
+    "steps": ["PU", "PU", "M1,0,0"],
+    "nextMustBeName": ["Slow"]
+  },
+  {
+    "type": "maneuver",
+    "name": "Barrel Roll",
+    "subtitle": "forward 2, evasive",
+    "category": "special",
+    "count": 3,
+    "yaw": ["straight"],
+    "pitch": ["climb", "level", "dive"],
+    "steps": ["M1,0,0", "M1,0,0"],
+    "effect": "Harder to hit this and next move"
+  },
+  {
+    "type": "maneuver",
+    "name": "Scissors",
+    "subtitle": "forward 1, evasive",
+    "category": "special",
+    "count": 2,
+    "yaw": ["left", "straight", "right"],
+    "pitch": ["climb", "level", "dive"],
+    "steps": ["M1,0,0", "TY"],
+    "effect": "Harder to hit this and next move"
+  }
+]

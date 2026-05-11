@@ -1,0 +1,5 @@
+[
+  { "type": "yaw", "direction": "left", "count": 2 },
+  { "type": "yaw", "direction": "straight", "count": 3 },
+  { "type": "yaw", "direction": "right", "count": 2 }
+]
