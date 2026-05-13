@@ -189,6 +189,14 @@ An aircraft is **destroyed** when it accumulates 15 damage cards OR the pilot ta
 
 - Every move an aircraft is **landed**, remove 1 pilot wound.
 
+## Advanced Rules
+
+### Tailing
+
+- At the end of a turn, an aircraft my declare that they are 'tailing' another.  In order to do so, the aircraft tailing must have the aircraft being tailed within the forward sight triangle of them, and the tailing must be within the rear sight triangle of the tailed.
+
+... can see and then change the turn or height of a move on a move by move basis after having seen the tailed pilot's cards.
+
 ## Aircraft
 
 Different aircraft have different maneuver decks reflecting their capabilities. For example, the Sopwith Camel's rotary engine makes it turn more easily to the left than the right.
