@@ -103,7 +103,12 @@ function moveInDirection(q, r, direction, count) {
 export function executeStep(state, step, yawDirection, ceiling = 99) {
   let { q, r, facing, altitude } = state;
 
-  if (step.startsWith('M')) {
+  if (step === 'MY') {
+    let dir = facing;
+    if (yawDirection === 'left') dir = (facing + 5) % 6;
+    else if (yawDirection === 'right') dir = (facing + 1) % 6;
+    ({ q, r } = moveInDirection(q, r, dir, 1));
+  } else if (step.startsWith('M')) {
     const { fwd, left, right } = parseMoveStep(step);
     const fwdDir = facing;
     const leftDir = (facing + 5) % 6;
@@ -111,11 +116,6 @@ export function executeStep(state, step, yawDirection, ceiling = 99) {
     ({ q, r } = moveInDirection(q, r, fwdDir, fwd));
     ({ q, r } = moveInDirection(q, r, leftDir, left));
     ({ q, r } = moveInDirection(q, r, rightDir, right));
-  } else if (step === 'MY') {
-    let dir = facing;
-    if (yawDirection === 'left') dir = (facing + 5) % 6;
-    else if (yawDirection === 'right') dir = (facing + 1) % 6;
-    ({ q, r } = moveInDirection(q, r, dir, 1));
   } else if (step === 'TY') {
     if (yawDirection === 'left') facing = rotateFacing(facing, -1);
     else if (yawDirection === 'right') facing = rotateFacing(facing, 1);
