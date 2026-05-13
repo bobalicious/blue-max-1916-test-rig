@@ -95,24 +95,47 @@ function createAircraftState(id, label, side, isPlayer, q, r, facing, cardData, 
   };
 }
 
-function initGame(numBots) {
-  const { aircraftDef, ...cardData } = { ...gameState.cardData, aircraftDef: gameState.aircraftDef };
+function initGame(numBots, bounds) {
   const total = 1 + numBots;
   const aircraft = [];
-  const radius = 5;
 
+  const side0 = [];
+  const side1 = [];
   for (let i = 0; i < total; i++) {
-    const isPlayer = i === 0;
-    const side = i < Math.ceil(total / 2) ? 0 : 1;
-    const angle = (2 * Math.PI * i) / total;
-    const q = Math.round(radius * Math.cos(angle));
-    const r = Math.round(radius * Math.sin(angle));
-    const facing = (Math.round(((Math.atan2(-q * 1.5, q * 0.866 + r * 1.732) * 180 / Math.PI) + 360) % 360 / 60)) % 6;
+    if (i < Math.ceil(total / 2)) side0.push(i);
+    else side1.push(i);
+  }
 
+  const halfC = bounds.maxQ - 1;
+  const halfR = bounds.maxR;
+
+  function spreadPositions(count, range) {
+    const positions = [];
+    if (count === 1) { positions.push(0); return positions; }
+    const step = Math.floor((range * 2) / (count - 1));
+    for (let i = 0; i < count; i++) {
+      positions.push(-range + step * i + Math.floor(Math.random() * 2));
+    }
+    return positions;
+  }
+
+  const topQs = spreadPositions(side0.length, halfC);
+  const bottomQs = spreadPositions(side1.length, halfC);
+
+  for (let si = 0; si < side0.length; si++) {
+    const i = side0[si];
     aircraft.push(createAircraftState(
-      i,
-      isPlayer ? 'Player' : `Bot ${i}`,
-      side, isPlayer, q, r, facing,
+      i, i === 0 ? 'Player' : `Bot ${i}`,
+      0, i === 0, topQs[si], -halfR + Math.floor(Math.random() * 2), 3,
+      gameState.cardData, gameState.aircraftDef,
+    ));
+  }
+
+  for (let si = 0; si < side1.length; si++) {
+    const i = side1[si];
+    aircraft.push(createAircraftState(
+      i, `Bot ${i}`,
+      1, false, bottomQs[si], halfR - Math.floor(Math.random() * 2), 0,
       gameState.cardData, gameState.aircraftDef,
     ));
   }
@@ -381,7 +404,6 @@ function handleEndTurn() {
 }
 
 function startGame(numBots) {
-  initGame(numBots);
   document.getElementById('setup-screen').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
   logEl = document.getElementById('game-log');
@@ -401,7 +423,8 @@ function startGame(numBots) {
   });
 
   const svg = document.getElementById('hex-board');
-  boardRenderer = new BoardRenderer(svg, 15, 28);
+  boardRenderer = new BoardRenderer(svg, 15, 30, 22);
+  initGame(numBots, boardRenderer.getBounds());
   ui = new PlaytestUI(gameState, getPlayer, handlePlayTurn, handleNextMove, handleEndTurn, handleResolveCombat, handlePlayerTargetChosen);
   ui.setBoardRenderer(boardRenderer);
 

@@ -4,9 +4,11 @@ import { aircraftPath } from './aircraft-shape.js';
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
 export class BoardRenderer {
-  constructor(svgElement, gridRadius, hexSize) {
+  constructor(svgElement, cols, rows, hexSize) {
     this.svg = svgElement;
-    this.gridRadius = gridRadius;
+    this.svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    this.cols = cols;
+    this.rows = rows;
     this.hexSize = hexSize;
     this.aircraftScale = hexSize * 0.55;
 
@@ -20,9 +22,24 @@ export class BoardRenderer {
     this.zoom = 1;
     this.viewCenterQ = 0;
     this.viewCenterR = 0;
+    this.panX = 0;
+    this.panY = 0;
 
-    this._updateViewBox(0, 0);
     this.renderGrid();
+    // Set a simple initial viewBox; centerOn will recalculate once laid out
+    const halfC = Math.floor(cols / 2);
+    const halfR = Math.floor(rows / 2);
+    const tl = hexToPixel(-halfC, -halfR, hexSize);
+    const br = hexToPixel(halfC, halfR, hexSize);
+    const m = hexSize * 2;
+    this.svg.setAttribute('viewBox', `${tl.x - m} ${tl.y - m} ${br.x - tl.x + m * 2} ${br.y - tl.y + m * 2}`);
+
+    this.svg.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      this.panX += e.deltaX * 0.5;
+      this.panY += e.deltaY * 0.5;
+      this._applyPan();
+    }, { passive: false });
 
     this.onSelectAircraft = null;
 
@@ -72,20 +89,62 @@ export class BoardRenderer {
 
   _updateViewBox(centerQ, centerR, zoom = 1) {
     const { x, y } = hexToPixel(centerQ, centerR, this.hexSize);
-    const baseW = this.hexSize * (this.gridRadius * 2 + 4) * 1.8;
-    const w = baseW / zoom;
-    const h = w * 0.75;
-    this.svg.setAttribute('viewBox', `${x - w / 2} ${y - h / 2} ${w} ${h}`);
+    const halfC = Math.floor(this.cols / 2);
+    const halfR = Math.floor(this.rows / 2);
+    const topLeft = hexToPixel(-halfC, -halfR, this.hexSize);
+    const botRight = hexToPixel(halfC, halfR, this.hexSize);
+    const margin = this.hexSize * 2;
+    const contentW = (botRight.x - topLeft.x) + margin * 2;
+    const contentH = (botRight.y - topLeft.y) + margin * 2;
+
+    const rect = this.svg.getBoundingClientRect();
+    const svgAspect = (rect.width || 800) / (rect.height || 600);
+    const contentAspect = contentW / contentH;
+
+    let w, h;
+    if (contentAspect > svgAspect) {
+      w = contentW;
+      h = contentW / svgAspect;
+    } else {
+      h = contentH;
+      w = contentH * svgAspect;
+    }
+
+    w /= zoom;
+    h /= zoom;
+
+    this._vbx = x - w / 2;
+    this._vby = y - h / 2;
+    this._vbw = w;
+    this._vbh = h;
+    this.panX = 0;
+    this.panY = 0;
+    this.svg.setAttribute('viewBox', `${this._vbx} ${this._vby} ${this._vbw} ${this._vbh}`);
+  }
+
+  _applyPan() {
+    this.svg.setAttribute('viewBox',
+      `${this._vbx + this.panX} ${this._vby + this.panY} ${this._vbw} ${this._vbh}`);
   }
 
   renderGrid() {
     this.gridLayer.innerHTML = '';
-    const r = this.gridRadius;
-    for (let q = -r; q <= r; q++) {
-      for (let rr = Math.max(-r, -q - r); rr <= Math.min(r, -q + r); rr++) {
-        this._drawHex(q, rr);
+    const halfC = Math.floor(this.cols / 2);
+    const halfR = Math.floor(this.rows / 2);
+    for (let q = -halfC; q <= halfC; q++) {
+      for (let r = -halfR; r <= halfR; r++) {
+        this._drawHex(q, r);
       }
     }
+  }
+
+  getBounds() {
+    return {
+      minQ: -Math.floor(this.cols / 2),
+      maxQ: Math.floor(this.cols / 2),
+      minR: -Math.floor(this.rows / 2),
+      maxR: Math.floor(this.rows / 2),
+    };
   }
 
   _drawHex(q, r) {
@@ -126,7 +185,7 @@ export class BoardRenderer {
     this.baseCenterQ = q;
     this.baseCenterR = r;
     this.zoom = 1;
-    this._updateViewBox(q, r, 1);
+    requestAnimationFrame(() => this._updateViewBox(q, r, 1));
   }
 
   _drawHighlightHex(q, r, cls = 'hex-player-highlight') {
@@ -231,7 +290,7 @@ export class BoardRenderer {
     if (opacity !== undefined) g.setAttribute('opacity', opacity);
 
     const path = document.createElementNS(SVG_NS, 'path');
-    path.setAttribute('d', createAircraftPath(this.aircraftScale));
+    path.setAttribute('d', aircraftPath(this.aircraftScale));
     g.appendChild(path);
 
     const badgeG = document.createElementNS(SVG_NS, 'g');
