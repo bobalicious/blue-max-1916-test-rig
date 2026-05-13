@@ -194,7 +194,7 @@ function handlePlayTurn() {
   log('All cards locked in');
   for (const ac of gameState.aircraft) {
     if (ac.isPlayer || ac.crashed || ac.landed) continue;
-    const result = selectBotMoves(ac, gameState.aircraft, gameState.aircraftDef);
+    const result = selectBotMoves(ac, gameState.aircraft, gameState.aircraftDef, boardRenderer.getBounds());
     ac.playBoard = result.playBoard;
     ac.maneuverHand = result.hand;
     ac.yawAvailable = result.yawAvail;
