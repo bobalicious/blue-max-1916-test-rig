@@ -57,7 +57,7 @@ export class PlaytestUI {
 
   renderRoster() {
     const listEl = document.getElementById('roster-list');
-    if (!listEl || listEl.classList.contains('roster-hidden')) return;
+    if (!listEl) return;
 
     listEl.innerHTML = '';
     const allAircraft = this.gs.aircraft;
