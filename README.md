@@ -18,6 +18,17 @@ Then open [http://localhost:8080](http://localhost:8080) in a browser.
 - **Card Viewer** — [http://localhost:8080](http://localhost:8080) — renders all card decks at print size (1.75" x 2.5")
 - **Playtest Rig** — [http://localhost:8080/playtest.html](http://localhost:8080/playtest.html) — interactive hex board with bot opponents, card selection, movement, and combat
 
+## Tests
+
+```bash
+npm install
+npm test
+```
+
+Uses Jest with ES modules. Test suites:
+- `tests/hex.test.js` — hex math, step execution (all command types including MY), move execution, path tracking
+- `tests/combat.test.js` — firing arc geometry, directly-in-front detection, damage card application (miss/wound/discard/fallback)
+
 ## Rules
 
 See [rules.md](rules.md) for the game rules — written for humans playing with physical cards. Covers movement, altitude, combat, damage, repair, special cards, and missions.

@@ -6,7 +6,7 @@ function facingDiff(a, b) {
   return Math.min(d, 6 - d);
 }
 
-function isInFiringArc(attacker, target) {
+export function isInFiringArc(attacker, target) {
   const fwd = HEX_DIRECTIONS[attacker.facing];
   const left = HEX_DIRECTIONS[(attacker.facing + 5) % 6];
   const right = HEX_DIRECTIONS[(attacker.facing + 1) % 6];
@@ -24,7 +24,7 @@ function isInFiringArc(attacker, target) {
   return false;
 }
 
-function isDirectlyInFront(attacker, target) {
+export function isDirectlyInFront(attacker, target) {
   const fwd = HEX_DIRECTIONS[attacker.facing];
   let q = attacker.q, r = attacker.r;
   for (let d = 1; d <= 5; d++) {
@@ -188,13 +188,13 @@ function applyDiscardTarget(ac, target) {
 }
 
 export function applyDamageCard(ac, card) {
-  ac.damageCount = (ac.damageCount || 0) + 1;
-  ac.damageTaken = ac.damageTaken || [];
-  ac.damageTaken.push(card);
-
   const discarded = [];
 
   if (card.effect === 'none') return { result: 'miss', discarded };
+
+  ac.damageCount = (ac.damageCount || 0) + 1;
+  ac.damageTaken = ac.damageTaken || [];
+  ac.damageTaken.push(card);
   if (card.effect === 'wound') {
     ac.wounds = (ac.wounds || 0) + 1;
     if (ac.wounds >= 3) ac.destroyed = true;
