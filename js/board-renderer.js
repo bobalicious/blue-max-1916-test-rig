@@ -333,25 +333,29 @@ export class BoardRenderer {
       g.setAttribute('transform', `translate(${x + this.hexSize * 1.2},${y - this.hexSize * 0.6})`);
       g.setAttribute('class', `card-label card-label-side-${ac.side}`);
 
-      const bg = document.createElementNS(SVG_NS, 'rect');
-      bg.setAttribute('x', 0);
-      bg.setAttribute('y', 0);
-      bg.setAttribute('width', this.hexSize * 3);
-      bg.setAttribute('height', this.hexSize * 1.2);
-      bg.setAttribute('rx', 3);
-      bg.setAttribute('class', 'card-label-bg');
-      g.appendChild(bg);
-
       const lines = [
         move.maneuver.name,
         move.yaw ? `Yaw: ${move.yaw.direction}` : '',
         move.pitch ? `Pitch: ${move.pitch.direction}` : '',
       ].filter(Boolean);
 
+      const lineH = 10;
+      const padding = 6;
+      const bgH = lines.length * lineH + padding;
+
+      const bg = document.createElementNS(SVG_NS, 'rect');
+      bg.setAttribute('x', 0);
+      bg.setAttribute('y', 0);
+      bg.setAttribute('width', this.hexSize * 3);
+      bg.setAttribute('height', bgH);
+      bg.setAttribute('rx', 3);
+      bg.setAttribute('class', 'card-label-bg');
+      g.appendChild(bg);
+
       lines.forEach((text, i) => {
         const t = document.createElementNS(SVG_NS, 'text');
         t.setAttribute('x', 4);
-        t.setAttribute('y', 10 + i * 10);
+        t.setAttribute('y', lineH + i * lineH);
         t.setAttribute('class', 'card-label-text');
         t.textContent = text;
         g.appendChild(t);

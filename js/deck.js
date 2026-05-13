@@ -1,12 +1,13 @@
 // Deck management: build from JSON, shuffle, draw, discard, reshuffle.
 
+let nextDeckId = 0;
+
 export function buildDeck(cardData) {
   const deck = [];
-  let id = 0;
   for (const card of cardData) {
     const count = card.count || 1;
     for (let i = 0; i < count; i++) {
-      deck.push({ ...card, id: id++ });
+      deck.push({ ...card, id: nextDeckId++ });
     }
   }
   return deck;
