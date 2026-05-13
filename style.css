@@ -203,6 +203,37 @@ body {
   fill: #a09070;
 }
 
+/* ── Circled yaw/pitch icons ── */
+
+.circled-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1.5px solid;
+  vertical-align: middle;
+}
+
+.circled-green {
+  border-color: #4a7c59;
+}
+
+.circled-green .aircraft-icon path {
+  fill: #4a7c59;
+}
+
+.circled-red {
+  border-color: #c0392b;
+}
+
+.circled-red .aircraft-icon path {
+  fill: #c0392b;
+}
+
+.yaw-icon path, .pitch-icon path {
+  fill: currentColor;
+}
+
 .diagram-forward {
   gap: 2px;
 }

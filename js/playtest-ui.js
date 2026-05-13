@@ -1,12 +1,10 @@
 import { getValidManeuvers, getValidYaws, getValidPitches, cascadeClear } from './validation.js';
 import { renderCard, preloadTemplates } from './card-renderer.js';
+import { yawIconHtml, pitchIconHtml } from './aircraft-shape.js';
 
 const CATEGORY_COLORS = {
   straight: '#859900', turn: '#b58900', special: '#dc322f', utility: '#6c71c4',
 };
-
-const YAW_SYMBOLS = { left: '←', straight: '↑', right: '→' };
-const PITCH_SYMBOLS = { climb: '↗', level: '—', dive: '↘' };
 
 export class PlaytestUI {
   constructor(gameState, getPlayer, onPlayTurn, onNextMove, onEndTurn, onResolveCombat, onPlayerTargetChosen) {
@@ -235,10 +233,10 @@ export class PlaytestUI {
       return `<span class="slot-card slot-maneuver" style="border-color:${color}">${card.name}</span>`;
     }
     if (type === 'yaw') {
-      return `<span class="slot-card slot-yaw">${YAW_SYMBOLS[card.direction]} ${card.directionLabel || card.direction}</span>`;
+      return `<span class="slot-card slot-yaw">${yawIconHtml(card.direction, 14)} ${card.directionLabel || card.direction}</span>`;
     }
     if (type === 'pitch') {
-      return `<span class="slot-card slot-pitch">${PITCH_SYMBOLS[card.direction]} ${card.directionLabel || card.direction}</span>`;
+      return `<span class="slot-card slot-pitch">${pitchIconHtml(card.direction, 21)} ${card.directionLabel || card.direction}</span>`;
     }
     return card.name || card.direction;
   }
@@ -379,12 +377,12 @@ export class PlaytestUI {
       `;
     } else if (type === 'yaw') {
       tile.innerHTML = `
-        <div class="tile-symbol">${YAW_SYMBOLS[card.direction]}</div>
+        <div class="tile-symbol">${yawIconHtml(card.direction, 14)}</div>
         <div class="tile-name">${card.direction}</div>
       `;
     } else if (type === 'pitch') {
       tile.innerHTML = `
-        <div class="tile-symbol">${PITCH_SYMBOLS[card.direction]}</div>
+        <div class="tile-symbol">${pitchIconHtml(card.direction, 21)}</div>
         <div class="tile-name">${card.direction}</div>
       `;
     }

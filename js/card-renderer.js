@@ -1,19 +1,26 @@
-import { aircraftSvgHtml } from './aircraft-shape.js';
+import { aircraftSvgHtml, yawIconHtml, pitchIconHtml, circledYawIcon, circledPitchIcon } from './aircraft-shape.js';
 
 const YAW_ALL = ['left', 'straight', 'right'];
 const PITCH_ALL = ['climb', 'level', 'dive'];
-const YAW_SYMBOLS = { left: '←', straight: '↑', right: '→' };
-const PITCH_SYMBOLS = { climb: '↗', level: '—', dive: '↘' };
 const CATEGORY_LABELS = { straight: 'Straight', turn: 'Turn', special: 'Special', utility: 'Utility' };
 const CATEGORY_SYMBOLS = { straight: '⟶', turn: '↻', special: '★', utility: '⚙' };
 
-function buildMinimalIndicators(allowed, allOptions, symbols) {
-  const disallowed = allOptions.filter(o => !allowed.includes(o));
+function buildMinimalYaw(allowed) {
+  const disallowed = YAW_ALL.filter(o => !allowed.includes(o));
   if (disallowed.length === 0) return '';
   if (disallowed.length <= allowed.length) {
-    return disallowed.map(o => `<span class="rsym rsym-red">${symbols[o]}</span>`).join(' ');
+    return disallowed.map(o => circledYawIcon(o, 'red')).join(' ');
   }
-  return allowed.map(o => `<span class="rsym rsym-green">${symbols[o]}</span>`).join(' ');
+  return allowed.map(o => circledYawIcon(o, 'green')).join(' ');
+}
+
+function buildMinimalPitch(allowed) {
+  const disallowed = PITCH_ALL.filter(o => !allowed.includes(o));
+  if (disallowed.length === 0) return '';
+  if (disallowed.length <= allowed.length) {
+    return disallowed.map(o => circledPitchIcon(o, 'red')).join(' ');
+  }
+  return allowed.map(o => circledPitchIcon(o, 'green')).join(' ');
 }
 
 function buildPrevNextHtml(card, which) {
@@ -192,8 +199,8 @@ function buildNotes(card) {
 
 const preprocessors = {
   maneuver(card) {
-    const yawHtml = buildMinimalIndicators(card.yaw, YAW_ALL, YAW_SYMBOLS);
-    const pitchHtml = buildMinimalIndicators(card.pitch, PITCH_ALL, PITCH_SYMBOLS);
+    const yawHtml = buildMinimalYaw(card.yaw);
+    const pitchHtml = buildMinimalPitch(card.pitch);
     const currentHtml = [yawHtml, pitchHtml].filter(Boolean).join(' ');
     return {
       ...card,
@@ -209,14 +216,14 @@ const preprocessors = {
     return {
       ...card,
       directionLabel: card.direction.charAt(0).toUpperCase() + card.direction.slice(1),
-      symbol: YAW_SYMBOLS[card.direction],
+      symbol: yawIconHtml(card.direction, 28),
     };
   },
   pitch(card) {
     return {
       ...card,
       directionLabel: card.direction.charAt(0).toUpperCase() + card.direction.slice(1),
-      symbol: PITCH_SYMBOLS[card.direction],
+      symbol: pitchIconHtml(card.direction, 35),
     };
   },
   damage(card) {
