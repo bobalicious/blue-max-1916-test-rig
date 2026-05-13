@@ -1,4 +1,4 @@
-import { hexToPixel, pixelToHex, hexCorners, facingAngle, DIRECTION_NAMES, HEX_DIRECTIONS } from './hex.js';
+import { hexToPixel, pixelToHex, hexCorners, facingAngle, DIRECTION_NAMES, HEX_DIRECTIONS, computeViewBox } from './hex.js';
 import { aircraftPath } from './aircraft-shape.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -26,13 +26,10 @@ export class BoardRenderer {
     this.panY = 0;
 
     this.renderGrid();
-    // Set a simple initial viewBox; centerOn will recalculate once laid out
-    const halfC = Math.floor(cols / 2);
-    const halfR = Math.floor(rows / 2);
-    const tl = hexToPixel(-halfC, -halfR, hexSize);
-    const br = hexToPixel(halfC, halfR, hexSize);
-    const m = hexSize * 2;
-    this.svg.setAttribute('viewBox', `${tl.x - m} ${tl.y - m} ${br.x - tl.x + m * 2} ${br.y - tl.y + m * 2}`);
+    // Initial viewBox with a reasonable default aspect ratio; centerOn recalculates with real dimensions
+    const vb = computeViewBox(cols, rows, hexSize, 0, 0, 800, 600);
+    this._vbx = vb.x; this._vby = vb.y; this._vbw = vb.w; this._vbh = vb.h;
+    this.svg.setAttribute('viewBox', `${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
 
     this.svg.addEventListener('wheel', (e) => {
       e.preventDefault();
@@ -88,38 +85,19 @@ export class BoardRenderer {
   }
 
   _updateViewBox(centerQ, centerR, zoom = 1) {
-    const { x, y } = hexToPixel(centerQ, centerR, this.hexSize);
-    const halfC = Math.floor(this.cols / 2);
-    const halfR = Math.floor(this.rows / 2);
-    const topLeft = hexToPixel(-halfC, -halfR, this.hexSize);
-    const botRight = hexToPixel(halfC, halfR, this.hexSize);
-    const margin = this.hexSize * 2;
-    const contentW = (botRight.x - topLeft.x) + margin * 2;
-    const contentH = (botRight.y - topLeft.y) + margin * 2;
-
     const rect = this.svg.getBoundingClientRect();
-    const svgAspect = (rect.width || 800) / (rect.height || 600);
-    const contentAspect = contentW / contentH;
+    const svgW = rect.width || 800;
+    const svgH = rect.height || 600;
 
-    let w, h;
-    if (contentAspect > svgAspect) {
-      w = contentW;
-      h = contentW / svgAspect;
-    } else {
-      h = contentH;
-      w = contentH * svgAspect;
-    }
+    const vb = computeViewBox(this.cols, this.rows, this.hexSize, centerQ, centerR, svgW, svgH, zoom);
 
-    w /= zoom;
-    h /= zoom;
-
-    this._vbx = x - w / 2;
-    this._vby = y - h / 2;
-    this._vbw = w;
-    this._vbh = h;
+    this._vbx = vb.x;
+    this._vby = vb.y;
+    this._vbw = vb.w;
+    this._vbh = vb.h;
     this.panX = 0;
     this.panY = 0;
-    this.svg.setAttribute('viewBox', `${this._vbx} ${this._vby} ${this._vbw} ${this._vbh}`);
+    this.svg.setAttribute('viewBox', `${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
   }
 
   _applyPan() {

@@ -63,6 +63,49 @@ export function facingAngle(facing) {
   return facing * 60;
 }
 
+// Compute a viewBox that shows the entire grid, centred on (centerQ, centerR).
+// svgWidth/svgHeight are the pixel dimensions of the SVG element.
+// Returns { x, y, w, h } for the viewBox attribute.
+// viewRadius: how many hexes of vertical range to show (defaults to half the grid rows, capped at 10).
+// The viewBox is sized to show `viewRadius` hexes vertically, and uses the SVG aspect ratio
+// to determine the horizontal extent. No content-based aspect adjustment — preserveAspectRatio
+// on the SVG element handles any mismatch.
+export function computeViewBox(cols, rows, hexSize, centerQ, centerR, svgWidth, svgHeight, zoom = 1, viewRadius) {
+  const halfC = Math.floor(cols / 2);
+  const halfR = Math.floor(rows / 2);
+  const radius = viewRadius || Math.min(halfR, 7);
+
+  // Compute the actual pixel extent of hexes within the view radius
+  // Check all edge hexes to find the true min/max y (q offset affects y)
+  const radiusW = Math.min(halfC, radius);
+  let minY = Infinity, maxY = -Infinity;
+  for (const q of [-radiusW, 0, radiusW]) {
+    for (const r of [-radius, radius]) {
+      const p = hexToPixel(q, r, hexSize);
+      if (p.y < minY) minY = p.y;
+      if (p.y > maxY) maxY = p.y;
+    }
+  }
+
+  const margin = hexSize * 1.5;
+  const h = (maxY - minY) + margin * 2;
+
+  const svgAspect = svgWidth / svgHeight;
+  const w = h * svgAspect;
+
+  const center = hexToPixel(centerQ, centerR, hexSize);
+
+  const zw = w / zoom;
+  const zh = h / zoom;
+
+  return {
+    x: center.x - zw / 2,
+    y: center.y - zh / 2,
+    w: zw,
+    h: zh,
+  };
+}
+
 export function hexDistance(a, b) {
   const dq = a.q - b.q;
   const dr = a.r - b.r;
